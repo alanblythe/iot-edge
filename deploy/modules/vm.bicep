@@ -4,26 +4,17 @@ param vmName string = 'simpleLinuxVM'
 @description('Username for the Virtual Machine.')
 param adminUsername string
 
-@description('Type of authentication to use on the Virtual Machine. SSH key is recommended.')
-@allowed([
-  'sshPublicKey'
-  'password'
-])
-param authenticationType string = 'password'
-
-@description('SSH Key or password for the Virtual Machine. SSH key is recommended.')
+@description('Password for the Virtual Machine. SSH key is recommended.')
 @secure()
-param adminPasswordOrKey string
+param adminPassword string
 
 @description('Unique DNS Name for the Public IP used to access the Virtual Machine.')
-param dnsLabelPrefix string = toLower('simplelinuxvm-${uniqueString(resourceGroup().id)}')
+param dnsLabelPrefix string = toLower('${vmName}')
 
 @description('The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version.')
 @allowed([
-  '12.04.5-LTS'
-  '14.04.5-LTS'
-  '16.04.0-LTS'
   '18.04-LTS'
+  '20.04-LTS'
 ])
 param ubuntuOSVersion string = '18.04-LTS'
 
@@ -33,34 +24,22 @@ param location string = resourceGroup().location
 @description('The size of the VM')
 param vmSize string = 'Standard_B2s'
 
-@description('Name of the VNET')
-param virtualNetworkName string = 'vNet'
+@description('Id of the Internet subnet in the virtual network')
+param internetSubnetId string
 
-@description('Name of the subnet in the virtual network')
-param subnetName string = 'Subnet'
+@description('Id of the Private subnet in the virtual network')
+param privateSubnetId string
 
 @description('Name of the Network Security Group')
 param networkSecurityGroupName string = 'SecGroupNet'
 
-var publicIPAddressName = '${vmName}PublicIP'
-var networkInterfaceName = '${vmName}NetInt'
+var publicIPAddressName = '${vmName}-PublicIP'
+var inetNetworkInterfaceName = '${vmName}-NetInt'
+var privateNetworkInterfaceName = '${vmName}-NetPri'
 var osDiskType = 'Standard_LRS'
-var subnetAddressPrefix = '10.1.0.0/24'
-var addressPrefix = '10.1.0.0/16'
-var linuxConfiguration = {
-  disablePasswordAuthentication: true
-  ssh: {
-    publicKeys: [
-      {
-        path: '/home/${adminUsername}/.ssh/authorized_keys'
-        keyData: adminPasswordOrKey
-      }
-    ]
-  }
-}
 
 resource nic 'Microsoft.Network/networkInterfaces@2020-06-01' = {
-  name: networkInterfaceName
+  name: inetNetworkInterfaceName
   location: location
   properties: {
     ipConfigurations: [
@@ -68,7 +47,7 @@ resource nic 'Microsoft.Network/networkInterfaces@2020-06-01' = {
         name: 'ipconfig1'
         properties: {
           subnet: {
-            id: subnet.id
+            id: internetSubnetId
           }
           privateIPAllocationMethod: 'Dynamic'
           publicIPAddress: {
@@ -80,6 +59,24 @@ resource nic 'Microsoft.Network/networkInterfaces@2020-06-01' = {
     networkSecurityGroup: {
       id: nsg.id
     }
+  }
+}
+
+resource nic2 'Microsoft.Network/networkInterfaces@2020-06-01' = {
+  name: privateNetworkInterfaceName
+  location: location
+  properties: {
+    ipConfigurations: [
+      {
+        name: 'ipconfig2'
+        properties: {
+          subnet: {
+            id: privateSubnetId
+          }
+          privateIPAllocationMethod: 'Dynamic'
+        }
+      }
+    ]
   }
 }
 
@@ -102,28 +99,6 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
         }
       }
     ]
-  }
-}
-
-resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
-  name: virtualNetworkName
-  location: location
-  properties: {
-    addressSpace: {
-      addressPrefixes: [
-        addressPrefix
-      ]
-    }
-  }
-}
-
-resource subnet 'Microsoft.Network/virtualNetworks/subnets@2020-06-01' = {
-  parent: vnet
-  name: subnetName
-  properties: {
-    addressPrefix: subnetAddressPrefix
-    privateEndpointNetworkPolicies: 'Enabled'
-    privateLinkServiceNetworkPolicies: 'Enabled'
   }
 }
 
@@ -168,14 +143,22 @@ resource vm 'Microsoft.Compute/virtualMachines@2020-06-01' = {
       networkInterfaces: [
         {
           id: nic.id
+          properties:{
+            primary: true
+          }
+        }
+        {
+          id: nic2.id
+          properties:{
+            primary: false
+          }
         }
       ]
     }
     osProfile: {
       computerName: vmName
       adminUsername: adminUsername
-      adminPassword: adminPasswordOrKey
-      linuxConfiguration: ((authenticationType == 'password') ? null : linuxConfiguration)
+      adminPassword: adminPassword
     }
   }
 }

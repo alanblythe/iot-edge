@@ -9,7 +9,7 @@ param location string = resourceGroup().location
 ])
 param environment string
 
-@description('Specify the name of the Iot hub.')
+@description('Specify the base name.')
 param baseName string
 
 param adminPassword string
@@ -61,6 +61,13 @@ module vmChild1 'modules/vm.bicep' = {
   dependsOn: [
     vnet
   ]
+}
+
+module acr 'modules/acr.bicep' = {
+  name: 'acr${baseName}'
+  params: {
+    baseName: baseName
+  }
 }
 
 output vmGatewaySSH string = vmGateway.outputs.sshCommand

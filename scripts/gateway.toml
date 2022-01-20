@@ -1,0 +1,19 @@
+hostname = "<DEVICEID>"
+trust_bundle_cert = "file:////etc/ssl/certs/azure-iot-test-only.root.ca.cert.pem.pem"
+
+## Manual provisioning with X.509 certificate
+[provisioning]
+source = "manual"
+iothub_hostname = "<HUBNAME>"
+device_id = "<DEVICEID>"
+#
+[provisioning.authentication]
+method = "x509"
+#
+identity_cert = "file:///var/secrets/device-id.pem"                # file URI, or...
+identity_pk = "file:///var/secrets/device-id.key.pem"              # file URI, or...
+
+[edge_ca]
+cert = "file:///var/ssl/iot-edge-device-<DEVICEID>-ca.cert.pem"                # file URI
+pk = "file:///var/ssl/iot-edge-device-<DEVICEID>-ca.key.pem"                # file URI
+

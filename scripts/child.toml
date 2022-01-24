@@ -1,0 +1,55 @@
+# ==============================================================================
+# Hostname
+# ==============================================================================
+#
+# Uncomment the next line to override the default hostname of this device.
+#
+hostname = "cayers-iot-edge-child1"
+
+# ==============================================================================
+# Local Gateway Hostname
+# ==============================================================================
+#
+# If this device is running in a nested deployment, uncomment the next line to
+# set the local gateway hostname of this device.
+#
+local_gateway_hostname = "cayers-iot-edge-gateway"
+
+# ==============================================================================
+# Cloud Timeout and Retry Behavior
+# ==============================================================================
+#
+# These settings control the timeout and retries for cloud operations, such as
+# communication with DPS during provisioning or IoT Hub for module identity creation.
+#
+# cloud_timeout_sec is the deadline (in seconds) for a network request (such as
+# an HTTP request) to the aforementioned cloud services. A response from the cloud
+# must be received before this deadline, or the request will fail as timed out.
+#
+# cloud_retries controls how many times a request may be retried should it fail.
+
+
+## Manual provisioning with connection string
+#
+[provisioning]
+source = "manual"
+#connection_string = "HostName=cayers-iot-edge-gateway;DeviceId=cayers-iot-edge-child1;SharedAccessKey=lZ+sDAIihX9oxRGgfaoqo+MhL8Vc7dKStBH9WWyMHNs="
+connection_string = "HostName=iot-edge-cayers.azure-devices.net;DeviceId=cayers-iot-edge-child1;SharedAccessKey=lZ+sDAIihX9oxRGgfaoqo+MhL8Vc7dKStBH9WWyMHNs=;GatewayHostName=cayers-iot-edge-gateway"
+
+## Manual provisioning with symmetric key
+
+
+## Manual provisioning with X.509 certificate
+# [provisioning]
+# source = "manual"
+# iothub_hostname = "example.azure-devices.net"
+# device_id = "my-device"
+#
+# [provisioning.authentication]
+# method = "x509"
+#
+## identity key
+# identity_pk = "file:///var/secrets/device-id.key.pem"              # file URI, or...
+# identity_pk = "pkcs11:slot-id=0;object=device%20id?pin-value=1234" # PKCS#11 URI
+#
+## identity certificate

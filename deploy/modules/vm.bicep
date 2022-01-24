@@ -166,3 +166,28 @@ resource vm 'Microsoft.Compute/virtualMachines@2020-06-01' = {
 output adminUsername string = adminUsername
 output hostname string = publicIP.properties.dnsSettings.fqdn
 output sshCommand string = 'ssh ${adminUsername}@${publicIP.properties.dnsSettings.fqdn}'
+
+
+
+// {
+//   "apiVersion": "[providers('Microsoft.DevTestLab','labs').apiVersions[0]]",
+//   "type": "microsoft.devtestlab/schedules",
+//   "name": "[concat('shutdown-computevm-',parameters('vmName'),copyIndex(parameters('numerationOfVMs')))]",
+//   "location": "[resourceGroup().location]",
+//   "dependsOn": [
+//       "[concat('Microsoft.Compute/virtualMachines/',concat(parameters('vmName'),copyIndex(parameters('numerationOfVMs'))))]"
+//   ],
+//   "properties": {
+//       "status": "Enabled",
+//       "taskType": "ComputeVmShutdownTask",
+//       "dailyRecurrence": {
+//           "time": "1900"
+//       },
+//       "timeZoneId": "W. Europe Standard Time",
+//       "notificationSettings": {
+//           "status": "Disabled",
+//           "timeInMinutes": 15
+//       },
+//       "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines',concat(parameters('vmName'),copyIndex(parameters('numerationOfVMs'))))]"
+//   }
+// }

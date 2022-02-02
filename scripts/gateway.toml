@@ -1,38 +1,19 @@
-hostname = "<DEVICEID>"
-trust_bundle_cert = "file:////etc/ssl/certs/azure-iot-test-only.root.ca.cert.pem.pem"
+hostname = "DEVICEID"
+trust_bundle_cert = "file:///etc/aziot/certificates/azure-iot-test-only.root.ca.cert.pem"
+#trust_bundle_cert = "file:///etc/aziot/certificates/azure-iot-test-only.intermediate-full-chain.ca.cert.pem"
 
 ## Manual provisioning with X.509 certificate
 [provisioning]
 source = "manual"
-iothub_hostname = "<HUBNAME>"
-device_id = "<DEVICEID>"
+iothub_hostname = "HUB_DNSNAME"
+device_id = "DEVICEID"
 #
 [provisioning.authentication]
 method = "x509"
 #
-identity_cert = "file:///var/secrets/device-id.pem"                # file URI, or...
-identity_pk = "file:///var/secrets/device-id.key.pem"              # file URI, or...
+identity_cert = "file:///etc/aziot/certificates/iot-edge-device-identity-DEVICEID-primary.cert.pem"                # file URI, or...
+identity_pk = "file:///etc/aziot/certificates/iot-edge-device-identity-DEVICEID-primary.key.pem"              # file URI, or...
 
 [edge_ca]
-cert = "file:///var/ssl/iot-edge-device-<DEVICEID>-ca.cert.pem"                # file URI
-pk = "file:///var/ssl/iot-edge-device-<DEVICEID>-ca.key.pem"                # file URI
-
-#hostname = "cayers-edge-gateway"
-#trust_bundle_cert = "file:///etc/aziot/certificates/azure-iot-test-only.root.ca.cert.pem"
-#trust_bundle_cert = "file:///etc/aziot/certificates/azure-iot-test-only.intermediate-full-chain.ca.cert.pem"
-
-## Manual provisioning with X.509 certificate
-#[provisioning]
-#source = "manual"
-#iothub_hostname = "cayers-edge-dev.azure-devices.net"
-#device_id = "cayers-edge-gateway"
-#
-#[provisioning.authentication]
-#method = "x509"
-#
-#identity_cert = "file:///etc/aziot/certificates/iot-edge-device-identity-cayers-edge-gateway-primary.cert.pem"                # file URI, or...
-#identity_pk = "file:///etc/aziot/certificates/iot-edge-device-identity-cayers-edge-gateway-primary.key.pem"              # file URI, or...
-
-#[edge_ca]
-#cert = "file:///etc/aziot/certificates/iot-edge-device-ca-cayers-edge-gateway-ca.cert.pem"                # file URI
-#pk = "file:///etc/aziot/certificates/iot-edge-device-ca-cayers-edge-gateway-ca.key.pem"                # file URI
+cert = "file:///etc/aziot/certificates/iot-edge-device-ca-DEVICEID-ca.cert.pem"                # file URI
+pk = "file:///etc/aziot/certificates/iot-edge-device-ca-DEVICEID-ca.key.pem"                # file URI

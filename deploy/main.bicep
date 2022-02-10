@@ -63,6 +63,21 @@ module vmChild1 'modules/vm.bicep' = {
   ]
 }
 
+module vmChild2 'modules/vm.bicep' = {
+  name: '${baseName}-child2'
+  params: {
+    vmName: '${baseName}-child2'
+    adminPassword: adminPassword
+    adminUsername: adminUsername
+    internetSubnetId: vnet.outputs.internetSubnetId
+    privateSubnetId: vnet.outputs.privateSubnetId
+    networkSecurityGroupName: '${baseName}-child2-NSG'
+  }
+  dependsOn: [
+    vnet
+  ]
+}
+
 module acr 'modules/acr.bicep' = {
   name: 'acr${baseName}'
   params: {

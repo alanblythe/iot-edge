@@ -6,20 +6,22 @@ gw=${2:-gateway}
 child1=${3:-child1}
 child2=${4:-child2}
 
+generateKeys() {
+    ./certGen.sh create_edge_device_identity_certificate "$1"
+    for i in `ls certs/iot-edge-device-identity-$1* | grep -v primary | grep -v secondary`; do mv "$i" "`echo $i | sed s/$1/$1-primary/g`"; done
+    for i in `ls private/iot-edge-device-identity-$1* | grep -v primary | grep -v secondary`; do mv "$i" "`echo $i | sed s/$1/$1-primary/g`"; done
+    ./certGen.sh create_edge_device_identity_certificate "$1"
+    for i in `ls private/iot-edge-device-identity-$1* | grep -v primary | grep -v secondary`; do mv "$i" "`echo $i | sed s/$1/$1-secondary/g`"; done
+}
+
 git clone https://github.com/Azure/iotedge.git
 mkdir iotedge-certs
 cd iotedge-certs
 cp ../iotedge/tools/CACertificates/*.cnf .
 cp ../iotedge/tools/CACertificates/certGen.sh .
 ./certGen.sh create_root_and_intermediate
-./certGen.sh create_edge_device_identity_certificate "$base$gw-primary"
-./certGen.sh create_edge_device_identity_certificate "$base$gw-secondary"
+generateKeys "$base$gw"
 ./certGen.sh create_edge_device_ca_certificate "$base$gw-ca"
-./certGen.sh create_edge_device_identity_certificate "$base$child1-primary"
-./certGen.sh create_edge_device_identity_certificate "$base$child1-secondary"
-./certGen.sh create_edge_device_identity_certificate "$base$child2-primary"
-./certGen.sh create_edge_device_identity_certificate "$base$child2-secondary"
 
-get_fingerprint () {
-    openssl x509 -in $1 -fingerprint -noout | cut -d= -f2 | sed -e 's/://g'
-}
+generateKeys "$base$child1"
+generateKeys "$base$child2"

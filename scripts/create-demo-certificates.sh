@@ -11,6 +11,7 @@ generateKeys() {
     for i in `ls certs/iot-edge-device-identity-$1* | grep -v primary | grep -v secondary`; do mv "$i" "`echo $i | sed s/$1/$1-primary/g`"; done
     for i in `ls private/iot-edge-device-identity-$1* | grep -v primary | grep -v secondary`; do mv "$i" "`echo $i | sed s/$1/$1-primary/g`"; done
     ./certGen.sh create_edge_device_identity_certificate "$1"
+    for i in `ls certs/iot-edge-device-identity-$1* | grep -v primary | grep -v secondary`; do mv "$i" "`echo $i | sed s/$1/$1-secondary/g`"; done
     for i in `ls private/iot-edge-device-identity-$1* | grep -v primary | grep -v secondary`; do mv "$i" "`echo $i | sed s/$1/$1-secondary/g`"; done
 }
 

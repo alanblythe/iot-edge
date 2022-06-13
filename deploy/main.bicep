@@ -16,6 +16,8 @@ param adminPassword string
 
 param adminUsername string
 
+param childCount int = 1
+
 module iotHub 'modules/iot.bicep' = {
   name: 'iotDeploy'
   params: {
@@ -48,35 +50,20 @@ module vmGateway 'modules/vm.bicep' = {
   ]
 }
 
-module vmChild1 'modules/vm.bicep' = {
-  name: '${baseName}-child1'
+module vmChild 'modules/vm.bicep' = [for i in range(0, childCount): {
+  name: '${baseName}-child${i}'
   params: {
     vmName: '${baseName}-child1'
     adminPassword: adminPassword
     adminUsername: adminUsername
     internetSubnetId: vnet.outputs.internetSubnetId
     privateSubnetId: vnet.outputs.privateSubnetId
-    networkSecurityGroupName: '${baseName}-child1-NSG'
+    networkSecurityGroupName: '${baseName}-child${i}-NSG'
   }
   dependsOn: [
     vnet
   ]
-}
-
-module vmChild2 'modules/vm.bicep' = {
-  name: '${baseName}-child2'
-  params: {
-    vmName: '${baseName}-child2'
-    adminPassword: adminPassword
-    adminUsername: adminUsername
-    internetSubnetId: vnet.outputs.internetSubnetId
-    privateSubnetId: vnet.outputs.privateSubnetId
-    networkSecurityGroupName: '${baseName}-child2-NSG'
-  }
-  dependsOn: [
-    vnet
-  ]
-}
+} ]
 
 module acr 'modules/acr.bicep' = {
   name: 'acr${baseName}'
@@ -86,4 +73,7 @@ module acr 'modules/acr.bicep' = {
 }
 
 output vmGatewaySSH string = vmGateway.outputs.sshCommand
-output vmChild1 string = vmChild1.outputs.sshCommand
+
+output vmChildSSH array = [for i in range(0, childCount): {
+  sshCommand: vmChild[i].outputs.sshCommand
+}]

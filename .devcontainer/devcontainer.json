@@ -32,5 +32,8 @@
 	},
 	"features": {
 		"azure-cli": "latest"
-	}
+	},
+	"mounts": [
+		"type=bind,source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh"
+	  ]
 }

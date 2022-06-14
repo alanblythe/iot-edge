@@ -17,8 +17,8 @@ cp ../iotedge/tools/CACertificates/certGen.sh .
 ./certGen.sh create_edge_device_ca_certificate "$base$gw-ca"
 ./certGen.sh create_edge_device_identity_certificate "$base$child1-primary"
 ./certGen.sh create_edge_device_identity_certificate "$base$child1-secondary"
-./certGen.sh create_edge_device_identity_certificate "$base$child2-primary"
-./certGen.sh create_edge_device_identity_certificate "$base$child2-secondary"
+#./certGen.sh create_edge_device_identity_certificate "$base$child2-primary"
+#./certGen.sh create_edge_device_identity_certificate "$base$child2-secondary"
 
 get_fingerprint () {
     openssl x509 -in $1 -fingerprint -noout | cut -d= -f2 | sed -e 's/://g'

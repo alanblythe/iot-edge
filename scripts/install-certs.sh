@@ -7,7 +7,6 @@ deviceKey="iot*.key.pem"
 # ======================= Install nested root CA =======================================
 cp $rootCert /usr/local/share/ca-certificates/$rootCert.crt
 update-ca-certificates
-systemctl restart docker
 
 # ======================= Copy device certs  =======================================
 cd ~
@@ -16,3 +15,5 @@ mkdir -p $cert_dir
 cp $rootCert $cert_dir
 cp $deviceCert $cert_dir
 cp $deviceKey $cert_dir
+
+sudo iotedge restart

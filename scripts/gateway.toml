@@ -1,19 +1,19 @@
-hostname = "DEVICEID"
+hostname = "ablythe-edge-test-gateway"
 trust_bundle_cert = "file:///etc/aziot/certificates/azure-iot-test-only.root.ca.cert.pem"
 #trust_bundle_cert = "file:///etc/aziot/certificates/azure-iot-test-only.intermediate-full-chain.ca.cert.pem"
 
 ## Manual provisioning with X.509 certificate
 [provisioning]
 source = "manual"
-iothub_hostname = "HUB_DNSNAME"
-device_id = "DEVICEID"
+iothub_hostname = "ablythe-edge-test-dev.azure-devices.net"
+device_id = "iotedge-gateway"
 #
 [provisioning.authentication]
 method = "x509"
 #
-identity_cert = "file:///etc/aziot/certificates/iot-edge-device-identity-DEVICEID-primary.cert.pem"                # file URI, or...
-identity_pk = "file:///etc/aziot/certificates/iot-edge-device-identity-DEVICEID-primary.key.pem"              # file URI, or...
+identity_cert = "file:///etc/aziot/certificates/iot-edge-device-identity-iotedge-gateway-primary.cert.pem"                # file URI, or...
+identity_pk = "file:///etc/aziot/certificates/iot-edge-device-identity-iotedge-gateway-primary.key.pem"              # file URI, or...
 
 [edge_ca]
-cert = "file:///etc/aziot/certificates/iot-edge-device-ca-DEVICEID-ca.cert.pem"                # file URI
-pk = "file:///etc/aziot/certificates/iot-edge-device-ca-DEVICEID-ca.key.pem"                # file URI
+cert = "file:///etc/aziot/certificates/iot-edge-device-ca-iotedge-gateway-ca.cert.pem"                # file URI
+pk = "file:///etc/aziot/certificates/iot-edge-device-ca-iotedge-gateway-ca.key.pem"                # file URI

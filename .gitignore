@@ -337,3 +337,4 @@ scripts/iotedge/
 scripts/iotedge-certs/
 iotedge/
 iotedge-certs/
+iot-edge.jar
